@@ -1,18 +1,45 @@
-DOCKER = docker
+DOCKER	 = docker
 
 NAME     = swift
-REGISTRY =
-VERSION  = 2.2-SNAPSHOT-2016-02-08-a
-BRANCH   = swift-2.2-branch
+PROXY    = ""
+REGISTRY = "local"
 
-.PHONY: build clean
+SWIFT_STABLE_BRANCH   = swift-2.2-branch
+SWIFT_STABLE_PLATFORM = ubuntu15.10
+SWIFT_STABLE_SNAPSHOT = SNAPSHOT-2016-03-01-a
+SWIFT_STABLE_VERSION  = swift-2.2
 
-all: build
+STABLE_VERSION  = $(SWIFT_STABLE_VERSION)-$(SWIFT_STABLE_SNAPSHOT)
 
-build:
-		$(DOCKER) build --build-arg SWIFT_VERSION=$(VERSION) --build-arg SWIFT_BRANCH=$(BRANCH) --rm=true -t $(NAME):$(VERSION) .
+SWIFT_DEVELOPMENT_BRANCH   = development
+SWIFT_DEVELOPMENT_PLATFORM = ubuntu15.10
+SWIFT_DEVELOPMENT_SNAPSHOT = SNAPSHOT-2016-03-01-a
+SWIFT_DEVELOPMENT_VERSION  = swift-DEVELOPMENT
+
+DEVELOPMENT_VERSION  = $(SWIFT_DEVELOPMENT_VERSION)-$(SWIFT_DEVELOPMENT_SNAPSHOT)
+
+.PHONY: stable development clean
+
+all: stable development
+
+stable:
+	$(DOCKER) build --build-arg PROXY=$(PROXY) \
+					--build-arg SWIFT_BRANCH=$(SWIFT_STABLE_BRANCH) \
+					--build-arg SWIFT_VERSION=$(SWIFT_STABLE_VERSION) \
+					--build-arg SWIFT_SNAPSHOT=$(SWIFT_STABLE_SNAPSHOT) \
+					--build-arg SWIFT_PLATFORM=$(SWIFT_STABLE_PLATFORM) \
+					--rm=true -t $(REGISTRY)/$(NAME):$(STABLE_VERSION) .
+
+development:
+	$(DOCKER) build --build-arg PROXY=$(PROXY) \
+					--build-arg SWIFT_BRANCH=$(SWIFT_DEVELOPMENT_BRANCH) \
+					--build-arg SWIFT_VERSION=$(SWIFT_DEVELOPMENT_VERSION) \
+					--build-arg SWIFT_SNAPSHOT=$(SWIFT_DEVELOPMENT_SNAPSHOT) \
+					--build-arg SWIFT_PLATFORM=$(SWIFT_DEVELOPMENT_PLATFORM) \
+					--rm=true -t $(REGISTRY)/$(NAME):$(DEVELOPMENT_VERSION) .
 
 clean:
-		$(DOCKER) rmi $(NAME):$(VERSION)
+	$(DOCKER) rmi $(REGISTRY)/$(NAME):$(STABLE_VERSION)
+	$(DOCKER) rmi $(REGISTRY)/$(NAME):$(DEVELOPMENT_VERSION)
 
-default: build
+default: stable
