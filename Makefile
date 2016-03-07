@@ -2,7 +2,7 @@ DOCKER	 = docker
 
 NAME     = swift
 PROXY    = ""
-REGISTRY = "local"
+REGISTRY = local
 
 SWIFT_STABLE_BRANCH   = swift-2.2-branch
 SWIFT_STABLE_PLATFORM = ubuntu15.10
