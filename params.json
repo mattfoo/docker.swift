@@ -1,0 +1,6 @@
+{
+  "name": "Docker.swift",
+  "tagline": "Build environment for Swift Docker container",
+  "body": "# docker.swift\r\nBuild environment for Swift Docker container\r\n\r\n## Building stable release\r\n\r\n    make stable\r\n\r\n## Building develoment release\r\n\r\n    make development\r\n\r\n## Cleaning up\r\n\r\n    make clean\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
